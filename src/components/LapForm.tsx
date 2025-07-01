@@ -1,13 +1,12 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { LapEntry } from "../types/LapEntry";
 import { v4 as uuidv4 } from "uuid";
 
 interface Props {
-  onSubmit: (lap: LapEntry) => void;
-  lapToEdit?: LapEntry | null;
+  onAddLap: (lap: LapEntry) => void;
 }
 
-export default function LapForm({ onSubmit, lapToEdit }: Props) {
+export default function LapForm({ onAddLap }: Props) {
   const [trackName, setTrackName] = useState("");
   const [carName, setCarName] = useState("");
   const [lapTime, setLapTime] = useState("");
@@ -15,24 +14,13 @@ export default function LapForm({ onSubmit, lapToEdit }: Props) {
   const [throttleAvg, setThrottleAvg] = useState("");
   const [brakeUsage, setBrakeUsage] = useState("");
 
-  useEffect(() => {
-    if (lapToEdit) {
-      setTrackName(lapToEdit.trackName);
-      setCarName(lapToEdit.carName);
-      setLapTime(lapToEdit.lapTime);
-      setTopSpeed(lapToEdit.topSpeed);
-      setThrottleAvg(lapToEdit.throttleAvg || "");
-      setBrakeUsage(lapToEdit.brakeUsage || "");
-    }
-  }, [lapToEdit]);
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!trackName || !carName || !lapTime || !topSpeed) return;
 
     const newLap: LapEntry = {
-      id: lapToEdit?.id || uuidv4(),
+      id: uuidv4(),
       sim: "forza",
       trackName,
       carName,
@@ -40,12 +28,12 @@ export default function LapForm({ onSubmit, lapToEdit }: Props) {
       topSpeed,
       throttleAvg,
       brakeUsage,
-      date: lapToEdit?.date || new Date().toISOString(),
+      date: new Date().toISOString(),
     };
 
-    onSubmit(newLap);
+    onAddLap(newLap);
 
-    // Clear form
+    // Reset form
     setTrackName("");
     setCarName("");
     setLapTime("");
@@ -55,13 +43,13 @@ export default function LapForm({ onSubmit, lapToEdit }: Props) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 bg-gray-900 p-4 rounded-2xl">
+    <form onSubmit={handleSubmit} className="space-y-4 bg-gray-900 p-4 sm:p-6 rounded-2xl w-full">
       <input
         type="text"
         placeholder="Track name"
         value={trackName}
         onChange={(e) => setTrackName(e.target.value)}
-        className="w-full p-2 rounded bg-gray-800 text-white"
+        className="w-full p-3 rounded bg-gray-800 text-white text-sm sm:text-base"
         required
       />
       <input
@@ -69,7 +57,7 @@ export default function LapForm({ onSubmit, lapToEdit }: Props) {
         placeholder="Car name"
         value={carName}
         onChange={(e) => setCarName(e.target.value)}
-        className="w-full p-2 rounded bg-gray-800 text-white"
+        className="w-full p-3 rounded bg-gray-800 text-white text-sm sm:text-base"
         required
       />
       <input
@@ -77,7 +65,7 @@ export default function LapForm({ onSubmit, lapToEdit }: Props) {
         placeholder="Lap time (e.g. 02:14.038)"
         value={lapTime}
         onChange={(e) => setLapTime(e.target.value)}
-        className="w-full p-2 rounded bg-gray-800 text-white"
+        className="w-full p-3 rounded bg-gray-800 text-white text-sm sm:text-base"
         required
       />
       <input
@@ -85,7 +73,7 @@ export default function LapForm({ onSubmit, lapToEdit }: Props) {
         placeholder="Top speed (e.g. 272 km/h)"
         value={topSpeed}
         onChange={(e) => setTopSpeed(e.target.value)}
-        className="w-full p-2 rounded bg-gray-800 text-white"
+        className="w-full p-3 rounded bg-gray-800 text-white text-sm sm:text-base"
         required
       />
       <input
@@ -93,21 +81,23 @@ export default function LapForm({ onSubmit, lapToEdit }: Props) {
         placeholder="Throttle avg % (optional)"
         value={throttleAvg}
         onChange={(e) => setThrottleAvg(e.target.value)}
-        className="w-full p-2 rounded bg-gray-800 text-white"
+        className="w-full p-3 rounded bg-gray-800 text-white text-sm sm:text-base"
       />
       <input
         type="text"
         placeholder="Brake usage % (optional)"
         value={brakeUsage}
         onChange={(e) => setBrakeUsage(e.target.value)}
-        className="w-full p-2 rounded bg-gray-800 text-white"
+        className="w-full p-3 rounded bg-gray-800 text-white text-sm sm:text-base"
       />
       <button
         type="submit"
-        className="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded text-white font-semibold"
+        className="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded text-white font-semibold text-sm sm:text-base"
       >
-        {lapToEdit ? "Update Lap" : "Save Lap"}
+        Save Lap
       </button>
     </form>
   );
 }
+
+
