@@ -1,12 +1,13 @@
-// show & sort laps
-
 import { LapEntry } from "../types/LapEntry";
+import { FaTrash, FaEdit } from "react-icons/fa";
 
 interface Props {
   laps: LapEntry[];
+  onEdit: (lap: LapEntry) => void;
+  onDelete: (id: string) => void;
 }
 
-export default function LapList({ laps }: Props) {
+export default function LapList({ laps, onEdit, onDelete }: Props) {
   if (laps.length === 0) return <p className="text-gray-400">No laps logged yet.</p>;
 
   const sortedLaps = [...laps].sort((a, b) => {
@@ -16,7 +17,11 @@ export default function LapList({ laps }: Props) {
   return (
     <div className="mt-6 space-y-4">
       {sortedLaps.map((lap) => (
-        <div key={lap.id} className="bg-gray-800 p-4 rounded-2xl">
+        <div key={lap.id} className="bg-gray-800 p-4 rounded-2xl relative">
+          <div className="absolute right-4 top-4 flex gap-3 text-sm text-gray-500">
+            <button onClick={() => onEdit(lap)}><FaEdit /></button>
+            <button onClick={() => onDelete(lap.id)}><FaTrash /></button>
+          </div>
           <div className="flex justify-between text-sm text-gray-400">
             <span>{lap.trackName}</span>
             <span>{lap.date.split("T")[0]}</span>
@@ -36,7 +41,6 @@ export default function LapList({ laps }: Props) {
   );
 }
 
-// Converts lap time like "02:14.038" to milliseconds for sorting
 function timeToMs(time: string): number {
   const [mins, rest] = time.split(":");
   const [secs, millis] = rest.split(".");

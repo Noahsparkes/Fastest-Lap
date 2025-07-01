@@ -1,14 +1,13 @@
-// enter new laps here
-
-import { useState } from "react";
-import { LapEntry } from "../types/LapEntry"; // Adjust the import path as necessary
+import { useEffect, useState } from "react";
+import { LapEntry } from "../types/LapEntry";
 import { v4 as uuidv4 } from "uuid";
 
 interface Props {
-  onAddLap: (lap: LapEntry) => void;
+  onSubmit: (lap: LapEntry) => void;
+  lapToEdit?: LapEntry | null;
 }
 
-export default function LapForm({ onAddLap }: Props) {
+export default function LapForm({ onSubmit, lapToEdit }: Props) {
   const [trackName, setTrackName] = useState("");
   const [carName, setCarName] = useState("");
   const [lapTime, setLapTime] = useState("");
@@ -16,13 +15,24 @@ export default function LapForm({ onAddLap }: Props) {
   const [throttleAvg, setThrottleAvg] = useState("");
   const [brakeUsage, setBrakeUsage] = useState("");
 
+  useEffect(() => {
+    if (lapToEdit) {
+      setTrackName(lapToEdit.trackName);
+      setCarName(lapToEdit.carName);
+      setLapTime(lapToEdit.lapTime);
+      setTopSpeed(lapToEdit.topSpeed);
+      setThrottleAvg(lapToEdit.throttleAvg || "");
+      setBrakeUsage(lapToEdit.brakeUsage || "");
+    }
+  }, [lapToEdit]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!trackName || !carName || !lapTime || !topSpeed) return;
 
     const newLap: LapEntry = {
-      id: uuidv4(),
+      id: lapToEdit?.id || uuidv4(),
       sim: "forza",
       trackName,
       carName,
@@ -30,10 +40,10 @@ export default function LapForm({ onAddLap }: Props) {
       topSpeed,
       throttleAvg,
       brakeUsage,
-      date: new Date().toISOString(),
+      date: lapToEdit?.date || new Date().toISOString(),
     };
 
-    onAddLap(newLap);
+    onSubmit(newLap);
 
     // Clear form
     setTrackName("");
@@ -96,7 +106,7 @@ export default function LapForm({ onAddLap }: Props) {
         type="submit"
         className="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded text-white font-semibold"
       >
-        Save Lap
+        {lapToEdit ? "Update Lap" : "Save Lap"}
       </button>
     </form>
   );
