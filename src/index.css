@@ -28,6 +28,8 @@ a:hover {
 }
 
 body {
+   /* @apply bg-gray-950 text-white; NEDS A LOOK OVER BEFORE WE SHIP */
+
   margin: 0;
   display: flex;
   place-items: center;
