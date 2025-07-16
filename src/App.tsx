@@ -1,4 +1,7 @@
-import { useState } from "react";
+
+
+
+import { useEffect, useState } from "react";
 import { LapEntry } from "./types/LapEntry";
 import LapForm from "./components/LapFormTile";
 import LapListGrid from "./components/LapListGrid";
@@ -8,24 +11,56 @@ export default function App() {
   const [laps, setLaps] = useState<LapEntry[]>([]);
   const [selectedTrack, setSelectedTrack] = useState<string>("");
 
-  const handleAddLap = (lap: LapEntry) => setLaps((prev) => [...prev, lap]);
+  // Load laps from localStorage on initial render
+  useEffect(() => {
+    const storedLaps = localStorage.getItem("laps");
+    if (storedLaps) {
+      setLaps(JSON.parse(storedLaps));
+    }
+  }, []);
 
-  const filteredLaps = selectedTrack
-    ? laps.filter((lap) => lap.trackName.toLowerCase() === selectedTrack.toLowerCase())
-    : laps;
+  // Save laps to localStorage every time they change
+  useEffect(() => {
+    localStorage.setItem("laps", JSON.stringify(laps));
+  }, [laps]);
+
+  const handleAddLap = (lap: LapEntry) => {
+    setLaps((prev) => [...prev, lap]);
+    setSelectedTrack(""); // Optional: Reset filter to show all after adding
+  };
+
+  const handleDeleteLap = (indexToDelete: number) => {
+    const updatedLaps = laps.filter((_, index) => index !== indexToDelete);
+    setLaps(updatedLaps);
+  };
+
+  const filteredLaps =
+    selectedTrack && selectedTrack.trim() !== ""
+      ? laps.filter(
+          (lap) =>
+            lap.trackName.trim().toLowerCase() ===
+            selectedTrack.trim().toLowerCase()
+        )
+      : laps;
 
   const uniqueTracks = Array.from(new Set(laps.map((lap) => lap.trackName)));
 
   return (
     <div className="bg-gray-50 py-24 sm:py-32 overflow-x-hidden">
       <div className="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
-        <h2 className="text-center text-base/7 font-semibold text-indigo-600">Fastest Lap Tracker</h2>
+        <h2 className="text-center text-base/7 font-semibold text-indigo-600">
+          Fastest Lap Tracker
+        </h2>
         <p className="mx-auto mt-2 max-w-lg text-center text-4xl font-semibold tracking-tight text-balance text-gray-950 sm:text-5xl">
           Log and Visualize Your Laps
         </p>
 
         <div className="mt-6 max-w-sm mx-auto">
-          <TrackFilter tracks={uniqueTracks} selected={selectedTrack} onChange={setSelectedTrack} />
+          <TrackFilter
+            tracks={uniqueTracks}
+            selected={selectedTrack}
+            onChange={setSelectedTrack}
+          />
         </div>
 
         <div className="mt-10 grid gap-4 sm:mt-16 lg:grid-cols-3 lg:grid-rows-2">
@@ -95,7 +130,11 @@ export default function App() {
                 </p>
               </div>
               <div className="relative min-h-120 w-full grow px-6 py-4 overflow-y-auto">
-                <LapListGrid laps={filteredLaps} filterTrack={selectedTrack} />
+                <LapListGrid
+                  laps={filteredLaps}
+                  filterTrack={selectedTrack}
+                  onDelete={handleDeleteLap}
+                />
               </div>
             </div>
             <div className="pointer-events-none absolute inset-px rounded-lg shadow-sm outline outline-black/5 max-lg:rounded-b-4xl lg:rounded-r-4xl" />
@@ -105,3 +144,4 @@ export default function App() {
     </div>
   );
 }
+
