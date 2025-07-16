@@ -1,22 +1,40 @@
-import { LapEntry } from "../types/LapEntry";
-import LapCard from "./LapCard";
 
-export default function LapListGrid({ laps }: { laps: LapEntry[] }) {
-  const sortedLaps = [...laps].sort((a, b) => {
-    return timeToMs(a.lapTime) - timeToMs(b.lapTime);
-  });
+import { LapEntry } from "../types/LapEntry";
+
+interface Props {
+  laps: LapEntry[];
+  filterTrack: string;
+}
+
+export default function LapListGrid({ laps, filterTrack }: Props) {
+  const filtered = filterTrack === "All"
+    ? laps
+    : laps.filter((lap) => lap.trackName === filterTrack);
+
+  if (filtered.length === 0)
+    return <p className="text-center text-gray-600">No laps match this track.</p>;
+
+  const sorted = [...filtered].sort(
+    (a, b) => timeToMs(a.lapTime) - timeToMs(b.lapTime)
+  );
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
-      {sortedLaps.map((lap) => (
-        <LapCard key={lap.id} lap={lap} />
+    <div className="grid gap-4">
+      {sorted.map((lap) => (
+        <div key={lap.id} className="bg-gray-800 text-white p-4 rounded-xl">
+          <div className="text-lg font-semibold">{lap.lapTime}</div>
+          <div className="text-sm">{lap.trackName} — {lap.carName}</div>
+          <div className="text-xs text-gray-400">{lap.date.split("T")[0]}</div>
+        </div>
       ))}
     </div>
   );
 }
 
 function timeToMs(time: string): number {
-  const [mins, rest] = time.split(":");
-  const [secs, millis] = rest.split(".");
-  return parseInt(mins) * 60000 + parseInt(secs) * 1000 + parseInt(millis.padEnd(3, "0"));
+  const [min, rest] = time.split(":");
+  const [sec, ms] = rest.split(".");
+  return parseInt(min) * 60000 + parseInt(sec) * 1000 + parseInt(ms);
 }
+
+
