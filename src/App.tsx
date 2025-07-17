@@ -1,11 +1,9 @@
-
-
-
 import { useEffect, useState } from "react";
 import { LapEntry } from "./types/LapEntry";
 import LapForm from "./components/LapFormTile";
 import LapListGrid from "./components/LapListGrid";
 import TrackFilter from "./components/TrackFilter";
+import LapTimeChart from "./components/LapTimeChart";
 
 export default function App() {
   const [laps, setLaps] = useState<LapEntry[]>([]);
@@ -83,29 +81,33 @@ export default function App() {
             <div className="pointer-events-none absolute inset-px rounded-lg shadow-sm outline outline-black/5 lg:rounded-l-4xl" />
           </div>
 
-          {/* Tile 2: Placeholder */}
+          {/* Tile 2: Graph Tile */}
           <div className="relative max-lg:row-start-1">
             <div className="absolute inset-px rounded-lg bg-white max-lg:rounded-t-4xl" />
             <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-lg)+1px)] max-lg:rounded-t-[calc(2rem+1px)]">
               <div className="px-8 pt-8 sm:px-10 sm:pt-10">
-                <p className="mt-2 text-lg font-medium tracking-tight text-gray-950 max-lg:text-center">Coming Soon</p>
+                <p className="mt-2 text-lg font-medium tracking-tight text-gray-950 max-lg:text-center">
+                  Performance Over Time
+                </p>
                 <p className="mt-2 max-w-lg text-sm/6 text-gray-600 max-lg:text-center">
-                  This tile will host track comparison graphs in the future.
+                  Visualize how your lap times change per session.
                 </p>
               </div>
-              <div className="flex flex-1 items-center justify-center px-8 max-lg:pt-10 max-lg:pb-12 sm:px-10 lg:pb-2">
-                <span className="text-6xl">📊</span>
+              <div className="flex flex-1 items-center justify-center px-8 py-4">
+                <LapTimeChart laps={filteredLaps} />
               </div>
             </div>
             <div className="pointer-events-none absolute inset-px rounded-lg shadow-sm outline outline-black/5 max-lg:rounded-t-4xl" />
           </div>
 
-          {/* Tile 3: Placeholder */}
+          {/* Tile 3: Placeholder for future filters */}
           <div className="relative max-lg:row-start-3 lg:col-start-2 lg:row-start-2">
             <div className="absolute inset-px rounded-lg bg-white" />
             <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-lg)+1px)]">
               <div className="px-8 pt-8 sm:px-10 sm:pt-10">
-                <p className="mt-2 text-lg font-medium tracking-tight text-gray-950 max-lg:text-center">Lap Filters</p>
+                <p className="mt-2 text-lg font-medium tracking-tight text-gray-950 max-lg:text-center">
+                  Lap Filters
+                </p>
                 <p className="mt-2 max-w-lg text-sm/6 text-gray-600 max-lg:text-center">
                   Future controls for filtering by track, car, or time range.
                 </p>
@@ -144,4 +146,3 @@ export default function App() {
     </div>
   );
 }
-
