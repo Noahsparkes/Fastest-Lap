@@ -6,16 +6,18 @@ import TrackFilter from "./components/TrackFilter";
 import LapTimeChart from "./components/LapTimeChart";
 
 export default function App() {
-  const [laps, setLaps] = useState<LapEntry[]>([]);
-  const [selectedTrack, setSelectedTrack] = useState<string>("");
-
-  // Load laps from localStorage on initial render
-  useEffect(() => {
-    const storedLaps = localStorage.getItem("laps");
-    if (storedLaps) {
-      setLaps(JSON.parse(storedLaps));
+  // Initialize laps from localStorage synchronously
+  const [laps, setLaps] = useState<LapEntry[]>(() => {
+    try {
+      const storedLaps = localStorage.getItem("laps");
+      return storedLaps ? JSON.parse(storedLaps) : [];
+    } catch (err) {
+      localStorage.removeItem("laps");
+      console.error("Failed to parse laps from localStorage:", err);
+      return [];
     }
-  }, []);
+  });
+  const [selectedTrack, setSelectedTrack] = useState<string>("");
 
   // Save laps to localStorage every time they change
   useEffect(() => {
@@ -146,3 +148,8 @@ export default function App() {
     </div>
   );
 }
+
+
+
+
+
