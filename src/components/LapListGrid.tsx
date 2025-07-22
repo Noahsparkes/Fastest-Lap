@@ -3,7 +3,7 @@ import { LapEntry } from "../types/LapEntry";
 interface Props {
   laps: LapEntry[];
   filterTrack: string;
-  onDelete?: (indexToDelete: number) => void;
+  onDelete?: (idToDelete: string) => void;
 }
 
 export default function LapListGrid({ laps, filterTrack, onDelete }: Props) {
@@ -21,7 +21,7 @@ export default function LapListGrid({ laps, filterTrack, onDelete }: Props) {
 
   return (
     <div className="grid gap-4">
-      {sorted.map((lap, idx) => (
+      {sorted.map((lap) => (
         <div key={lap.id} className="bg-gray-800 text-white p-4 rounded-xl flex items-center justify-between">
           <div>
             <div className="text-lg font-semibold">{lap.lapTime}</div>
@@ -31,7 +31,7 @@ export default function LapListGrid({ laps, filterTrack, onDelete }: Props) {
           {onDelete && (
             <button
               className="ml-4 px-2 py-1 bg-red-600 rounded hover:bg-red-700 text-xs"
-              onClick={() => onDelete(idx)}
+              onClick={() => onDelete(lap.id)}
               aria-label="Delete lap"
             >
               Delete
@@ -48,3 +48,4 @@ function timeToMs(time: string): number {
   const [sec, ms] = rest.split(".");
   return parseInt(min) * 60000 + parseInt(sec) * 1000 + parseInt(ms);
 }
+
