@@ -1,10 +1,6 @@
 {
-  "functions": {
-    "api/ping-supabase.ts": {
-      "runtime": "nodejs18.x"
-    }
-  },
-  "cron": [
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "crons": [
     {
       "path": "/api/ping-supabase",
       "schedule": "0 8 * * *"
