@@ -1,4 +1,9 @@
 {
+  "functions": {
+    "api/ping-supabase.ts": {
+      "runtime": "nodejs18.x"
+    }
+  },
   "cron": [
     {
       "path": "/api/ping-supabase",
