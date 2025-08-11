@@ -1,30 +1,51 @@
-# React + TypeScript + Vite
+# 🏎️ Fastest Laps – Sim Racing Lap Tracking Tool
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Fastest Laps** is a modern web application built for sim racers who want to log, visualize, and analyze their best laps.  
+Whether you’re chasing milliseconds in ACC, iRacing, or rFactor 2 — this tool turns your performance data into actionable insights.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📸 Live Demo
+[**Open Fastest Laps**](https://fastest-lap-ruby.vercel.app/)  
+*(Best viewed on desktop for full graphing experience)*
+![screenshot](/src/assets/images/Screenshot%202025-08-11%20at%2009.17.52%20(2).png)
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
 
-- Configure the top-level `parserOptions` property like this:
+## ✨ Key Features
+- **Lap Logging** – Track your personal bests and improvement over time.
+- **Performance Graphs** – Interactive charts to see pace trends across sessions.
+- **Clean & Responsive Design** – Optimized for both desktop and mobile.
+- **Always Awake** – Automated heartbeat system keeps the database responsive.
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+---
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## 🛠 Technology
+Built with:
+- **Frontend:** TypeScript, React, TailwindCSS
+- **Database & Auth:** Supabase
+- **Data Visualization:** Recharts
+- **Hosting & Automation:** Vercel + Cron Jobs
+
+---
+
+## 🚧 Roadmap
+Planned future updates:
+- User login
+- Multi-driver support
+- Track-specific leaderboards
+- Exportable CSV/JSON lap history
+- API for integrating with sim telemetry tools
+
+---
+
+## 📜 License & Use
+This project is currently closed-source.  
+The live app is available to try via the link above.  
+If you’re interested in collaborations, integrations, or early access to premium features, please reach out.
+
+---
+
+## 💡 Background
+As a passionate sim racer, I wanted a lightweight, accessible way to track my fastest laps without bloated software or manual spreadsheets. **Fastest Laps** is built to be quick, simple, and visually engaging — a racing engineer’s dashboard for the everyday driver.
