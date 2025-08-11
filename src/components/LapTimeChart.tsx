@@ -31,6 +31,15 @@ function toMs(timeStr: string): number {
   return parseInt(min) * 60000 + parseInt(sec) * 1000 + parseInt(ms);
 }
 
+function formatMsToLapTime(ms: number): string {
+  const min = Math.floor(ms / 60000);
+  const sec = Math.floor((ms % 60000) / 1000);
+  const msPart = ms % 1000;
+  return `${min}:${sec.toString().padStart(2, "0")}.${msPart
+    .toString()
+    .padStart(3, "0")}`;
+}
+
 export default function LapTimeChart({ laps, selectedTrack }: Props) {
   const isAllTracks =
     !selectedTrack ||
@@ -46,14 +55,13 @@ export default function LapTimeChart({ laps, selectedTrack }: Props) {
   }, {} as Record<string, LapEntry[]>);
 
   // For single track, sort by date
-  let chartData: { date: string; lapTimeMs: number; lapTime: number; carName: string; name: string }[] = [];
+  let chartData: { date: string; lapTimeMs: number; carName: string; name: string }[] = [];
   if (!isAllTracks && grouped[selectedTrack]) {
     chartData = [...grouped[selectedTrack]]
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
       .map((lap, idx) => ({
         date: new Date(lap.date).toLocaleDateString(),
         lapTimeMs: toMs(lap.lapTime),
-        lapTime: Number((toMs(lap.lapTime) / 1000).toFixed(3)),
         carName: lap.carName,
         name: `Lap ${idx + 1}`,
       }));
@@ -66,12 +74,12 @@ export default function LapTimeChart({ laps, selectedTrack }: Props) {
         .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
         .map((lap, idx) => ({
           date: new Date(lap.date).toLocaleDateString(),
-          lapTime: Number((toMs(lap.lapTime) / 1000).toFixed(3)),
+          lapTimeMs: toMs(lap.lapTime),
           name: `Lap ${idx + 1}`,
         }));
       return acc;
     },
-    {} as Record<string, { date: string; lapTime: number; name: string }[]>
+    {} as Record<string, { date: string; lapTimeMs: number; name: string }[]>
   );
 
   // If no data, show message
@@ -92,15 +100,19 @@ export default function LapTimeChart({ laps, selectedTrack }: Props) {
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="date" />
         <YAxis
+          dataKey="lapTimeMs"
           domain={[
-            (dataMin: number) => Math.max(0, dataMin - 0.2),
-            (dataMax: number) => dataMax + 0.2,
+            (dataMin: number) => Math.max(0, dataMin - 2000),
+            (dataMax: number) => dataMax + 2000,
           ]}
-          tickFormatter={(tick) => tick.toFixed(2) + "s"}
+          tickFormatter={formatMsToLapTime}
           reversed
         />
         <Tooltip
-          formatter={(value: number) => `${value.toFixed(3)}s`}
+          formatter={(_, __, props) => {
+            const ms = props.payload?.lapTimeMs;
+            return ms !== undefined ? formatMsToLapTime(ms) : "";
+          }}
           labelFormatter={(label) => `Date: ${label}`}
         />
         <Legend />
@@ -110,7 +122,7 @@ export default function LapTimeChart({ laps, selectedTrack }: Props) {
                 key={trackName}
                 data={data}
                 type="monotone"
-                dataKey="lapTime"
+                dataKey="lapTimeMs"
                 name={trackName}
                 stroke={colors[idx % colors.length]}
                 dot={{ r: 3 }}
@@ -120,7 +132,7 @@ export default function LapTimeChart({ laps, selectedTrack }: Props) {
           : (
             <Line
               type="monotone"
-              dataKey="lapTime"
+              dataKey="lapTimeMs"
               name={selectedTrack}
               stroke={colors[0]}
               dot={{ r: 3 }}
@@ -131,3 +143,4 @@ export default function LapTimeChart({ laps, selectedTrack }: Props) {
     </ResponsiveContainer>
   );
 }
+
